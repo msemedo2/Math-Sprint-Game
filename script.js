@@ -30,13 +30,61 @@ let equationObject = {};
 const wrongFormat = [];
 
 // Time
+let timer;
+let timePlayed = 0;
+let baseTime = 0;
+let penaltyTime = 0;
+let finalTime = 0;
+let finalTimeDisplay = '0.0s';
 
 // Scroll
 let valueY = 0;
 
+// Stop Timer, Process Results, go Score Page
+function checkTime() {
+	console.log(timePlayed);
+	if (playerGuessArray.length == questionAmount) {
+		console.log('playerGuessArray: ' + playerGuessArray);
+		clearInterval(timer);
+		// Check for wrong guesses, add penalty time
+		equationsArray.forEach((equation, index) => {
+			if (equation.evaluated === playerGuessArray[index]) {
+				// Correct Guess, No Penalty
+			} else {
+				// Incorrect Guess, Penalty
+				penaltyTime += 0.5;
+			}
+		});
+		finalTime = timePlayed + penaltyTime;
+		console.log(
+			'time:',
+			timePlayed,
+			'penalty:',
+			penaltyTime,
+			'final:',
+			finalTime
+		);
+	}
+}
+
+// Add a tenth of a second to timePlayed
+function addTime() {
+	timePlayed += 0.1;
+	checkTime();
+}
+
+// Start timer when game page is clicked
+function startTimer() {
+	// Reset times
+	timePlayed = 0;
+	penaltyTime = 0;
+	finalTime = 0;
+	timer = setInterval(addTime, 100);
+	gamePage.removeEventListener('click', startTimer);
+}
+
 // Scroll, Store user selection in playerGuessArray
 function select(guessedTrue) {
-	console.log(playerGuessArray);
 	// Scroll 80 pixels
 	valueY += 80;
 	itemContainer.scroll(0, valueY);
@@ -54,10 +102,8 @@ function getRandomInt(max) {
 function createEquations() {
 	// Randomly choose how many correct equations there should be
 	const correctEquations = getRandomInt(questionAmount);
-	console.log('correct equations:', correctEquations);
 	// Set amount of wrong equations
 	const wrongEquations = questionAmount - correctEquations;
-	console.log('wrong equations:', wrongEquations);
 	// Loop through, multiply random numbers up to 9, push to array
 	for (let i = 0; i < correctEquations; i++) {
 		firstNumber = getRandomInt(9);
@@ -164,7 +210,6 @@ function showCountdown() {
 function selectQuestionAmount(e) {
 	e.preventDefault();
 	questionAmount = getRadioValue();
-	console.log('question amount: ' + questionAmount);
 	if (questionAmount) {
 		showCountdown();
 	}
@@ -183,3 +228,4 @@ startForm.addEventListener('click', () => {
 
 // Event Listeners
 startForm.addEventListener('submit', selectQuestionAmount);
+gamePage.addEventListener('click', startTimer);
