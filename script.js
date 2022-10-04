@@ -133,9 +133,7 @@ function scoresToDOM() {
 
 // Stop Timer, Process Results, go Score Page
 function checkTime() {
-	console.log(timePlayed);
 	if (playerGuessArray.length == questionAmount) {
-		console.log('playerGuessArray: ' + playerGuessArray);
 		clearInterval(timer);
 		// Check for wrong guesses, add penalty time
 		equationsArray.forEach((equation, index) => {
