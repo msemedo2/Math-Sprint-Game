@@ -94,11 +94,41 @@ function getRadioValue() {
 	return radioValue;
 }
 
+// Navigate from Countdown Page to Game Page
+function showGamePage() {
+	countdownPage.hidden = true;
+	gamePage.hidden = false;
+}
+
+// Displays 3, 2 , 1 GO!
+function countdownStart() {
+	countdown.textContent = '3';
+	setInterval(() => {
+		if (countdown.textContent > 1) {
+			countdown.textContent--;
+		} else if (countdown.textContent == 1) {
+			countdown.textContent = 'GO!';
+		} else {
+			showGamePage();
+		}
+	}, 1000);
+}
+
+// Navigate from Splash Page to Countdown Page
+function showCountdown() {
+	splashPage.hidden = true;
+	countdownPage.hidden = false;
+	countdownStart();
+}
+
 // Form that decides amount of questions
 function selectQuestionAmount(e) {
 	e.preventDefault();
 	questionAmount = getRadioValue();
 	console.log('question amount: ' + questionAmount);
+	if (questionAmount) {
+		showCountdown();
+	}
 }
 
 startForm.addEventListener('click', () => {
